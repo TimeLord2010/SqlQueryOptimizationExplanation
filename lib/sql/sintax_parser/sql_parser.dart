@@ -20,7 +20,7 @@ var nonOptionalJoinPat = '$singleJoinPat(\\s+$singleJoinPat)*';
 var joinPat = '(?<join>\\s+$nonOptionalJoinPat)?';
 var orderByUnitPat = patSeparatedByComma('($singleVarPat)(\\s+(desc|asc))?');
 var orderByPat = r'(?<orderby>\s+order\s+by\s+' + orderByUnitPat + r')?';
-var sqlPatStr = '^select\\s+$columnListOrAll\\s+from\\s+(?<table>$singleVarPat)$joinPat$wherePat$orderByPat\\s*;?\$\n';
+var sqlPatStr = '^select\\s+$columnListOrAll\\s+from\\s+(?<table>$singleVarPat)$joinPat$wherePat$orderByPat\\s*;?\$';
 var sqlPat = RegExp(sqlPatStr,dotAll: true,caseSensitive: false);
 
 String patSeparatedByComma(String pat) {
