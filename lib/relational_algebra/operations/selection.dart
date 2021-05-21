@@ -22,5 +22,10 @@ class Selection implements RAoperator {
   String toString() {
     return '$symbol {$condition}($source)';
   }
+
+  @override
+  String simpleString() {
+    return '$symbol {$condition}(?)';
+  }
   
 }

@@ -32,4 +32,9 @@ class Projection implements RAoperator {
   String toString() {
     return '$symbol $outputColumns ($source)';
   }
+
+  @override
+  String simpleString() {
+    return '$symbol $outputColumns (?)';
+  }
 }

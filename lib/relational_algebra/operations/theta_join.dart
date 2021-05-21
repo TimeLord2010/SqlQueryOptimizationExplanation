@@ -123,4 +123,9 @@ class ThetaJoin implements RArelationalOperator {
   String toString() {
     return '($source)$symbol{$condition}($source2)';
   }
+
+  @override
+  String simpleString() {
+    return '(?)$symbol{$condition}(?)';
+  }
 }

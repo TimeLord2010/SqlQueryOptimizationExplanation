@@ -9,5 +9,10 @@ class NaturalJoin implements RArelationalOperator {
 
   @override
   late var source2;
+
+  @override
+  String simpleString() {
+    return '(?)⋈(?)';
+  }
   
 }

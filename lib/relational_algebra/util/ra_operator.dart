@@ -5,4 +5,8 @@ class RAoperator extends RAexpression {
 	var source;
 	final String symbol = '';
 
+  String simpleString () {
+    throw Exception('not implemented');
+  }
+
 }

@@ -11,4 +11,9 @@ class CrossProduct implements RArelationalOperator {
   @override
   String symbol = '×';
 
+  @override
+  String simpleString() {
+    return '(?)×(?)';
+  }
+
 }
