@@ -22,6 +22,7 @@ void setConditionalsToEspecificSelections(RAnavigator nav, List<String> tables) 
         }
       });
     }
+    if (cond.length == 0) continue;
     var selection = Selection();
     selection.condition = Conditional.fromUnits(cond);
     selection.source = table;
@@ -55,7 +56,8 @@ void setProjectionsToEspecificSelections(RAnavigator nav, List<String> tables) {
   for (var table in tables) {
     var op = RAnavigator.lookFor(nav, table);
     if (op == null) throw Exception('Cannot find operator with source set to $table.');
-    if (!(op is Selection)) throw Exception('Operator should be a selection.');
+    if (!(op is Selection)) continue;
+    //throw Exception('Operator should be a selection. Found: $op.');
     var opParent = nav.parentOf(op);
     if (opParent == null) throw Exception('Cannot find parent of $op');
     var columns = allColumns.where((element) => element.table == table);
@@ -76,8 +78,16 @@ void setProjectionsToEspecificSelections(RAnavigator nav, List<String> tables) {
 
 dynamic optimize(op, List<String> tables) {
   var nav = RAnavigator(op);
-  setConditionalsToEspecificSelections(nav, tables);
-  setProjectionsToEspecificSelections(nav, tables);
+  try {
+    setConditionalsToEspecificSelections(nav, tables);
+  } catch (e) {
+    throw Exception('Exception with setting conditionals. ${e.toString()}');
+  }
+  try {
+    setProjectionsToEspecificSelections(nav, tables);
+  } catch (e) {
+    throw Exception('Exception with setting projections. ${e.toString()}');
+  }
   nav.goTop();
   return nav.expression;
 }
