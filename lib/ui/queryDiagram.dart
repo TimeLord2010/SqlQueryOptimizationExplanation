@@ -82,8 +82,6 @@ void buildDiagramNodes(Graph graph, op, {Node? parent}) {
   } else {
     throw Exception('Parameter $op is of type invalid.');
   }
-  print('parent: ${parent?.key.value}');
-  print('current: ${current.key.value}');
   if (parent != null) graph.addEdge(parent, current);
   if (op is String) return;
   if (op is RArelationalOperator) {
@@ -108,12 +106,14 @@ Widget makeDiagram(RAoperator op) {
       graph: graph,
       algorithm: BuchheimWalkerAlgorithm(builder, TreeEdgeRenderer(builder)),
       paint: Paint()
-        ..color = Colors.green
-        ..strokeWidth = 1
+        ..color = Colors.blue
+        ..strokeWidth = 2
         ..style = PaintingStyle.stroke,
       builder: (Node node) {
         // I can decide what widget should be shown here based on the id
         var a = node.key.value as String;
-        return Text(a);
+        return Text(
+          a, 
+          style: TextStyle(fontWeight: FontWeight.bold),);
       });
 }
