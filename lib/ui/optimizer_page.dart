@@ -18,24 +18,27 @@ class OptimizerPage extends StatefulWidget {
 
 class _OptimizerPage extends State<OptimizerPage> {
 
+  _OptimizerPage ({String? sql}) {
+      currentSql = sql ?? "select idMovimentacao, DataMovimentacao, Movimentacao.Descricao, TipoMovimento.DescMovimentacao, Categoria.DescCategoria, Contas.Descricao, Valor from Movimentacao join TipoMovimento on TipoMovimento.idTipoMovimento = Movimentacao.TipoMovimento_idTipoMovimento join Categoria on Categoria.idCategoria = Movimentacao.Categoria_idCategoria join Contas on Contas.idConta = Movimentacao.Contas_idConta where TipoMovimento.DescMovimentacao = 'Débito' and Categoria.DescCategoria = 'Salário' and Valor > 10 and Contas.Descricao = 'Bitcoin';";
+  }
   Widget? content;
-  String currentSql =
-      "select idMovimentacao, DataMovimentacao, Movimentacao.Descricao, TipoMovimento.DescMovimentacao, Categoria.DescCategoria, Contas.Descricao, Valor from Movimentacao join TipoMovimento on TipoMovimento.idTipoMovimento = Movimentacao.TipoMovimento_idTipoMovimento join Categoria on Categoria.idCategoria = Movimentacao.Categoria_idCategoria join Contas on Contas.idConta = Movimentacao.Contas_idConta where TipoMovimento.DescMovimentacao = 'Débito' and Categoria.DescCategoria = 'Salário' and Valor > 10 and Contas.Descricao = 'Bitcoin';";
+  String currentSql = "";
+  final TextEditingController _nameController = TextEditingController();
 
-  Future process() async {
+  void process() {
     try {
       var parser = SqlParser(currentSql);
-      await checkLexaly(parser);
+      //await checkLexaly(parser);
       var ra = sqlToRelationalAlgebra(parser);
       var optimized = optimize(ra, parser.getTables().toList());
       setState(() {
         //content = makeScrollable(makeDiagram(optimized), width: width);
         content = InteractiveViewer(
-              constrained: false,
-              boundaryMargin: EdgeInsets.all(10),
-              minScale: 0.001,
-              maxScale: 5,
-              child: makeDiagram(optimized),
+          constrained: false,
+          boundaryMargin: EdgeInsets.all(10),
+          minScale: 0.001,
+          maxScale: 5,
+          child: makeDiagram(optimized),
         );
       });
     } catch (e) {
@@ -47,6 +50,7 @@ class _OptimizerPage extends State<OptimizerPage> {
 
   @override
   Widget build(BuildContext context) {
+    _nameController.text = currentSql;
     return Scaffold(
         appBar: AppBar(
           title: Text("Query Optimization Explainer"),
@@ -58,7 +62,8 @@ class _OptimizerPage extends State<OptimizerPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
-                initialValue: currentSql,
+                controller: _nameController,
+                //initialValue: currentSql,
                 keyboardType: TextInputType.multiline,
                 maxLines: 6,
                 decoration: const InputDecoration(labelText: 'query', hintText: 'select col1, col2 from tb1 where col1 = 1;'),
@@ -68,14 +73,26 @@ class _OptimizerPage extends State<OptimizerPage> {
               ),
               Container(
                 margin: EdgeInsets.all(10),
-                child: Column(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
                         onPressed: () {
                           process();
                         },
-                        child: Text('Go'))
+                        child: Text('Go')),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _nameController.clear();
+                              currentSql = '';
+                              content = null;
+                            });
+                          },
+                          child: Text("Clear")),
+                    )
                   ],
                 ),
               ),
